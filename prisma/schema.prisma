@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Document {
+  id         String      @id @default(cuid())
+  name       String
+  filePath   String
+  createdAt  DateTime    @default(now())
+  highlights Highlight[]
+}
+
+model Highlight {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  text       String
+  context    String
+  page       Int
+  definition String
+  analysis   String   // JSON string: { partOfSpeech, infinitive?, conjugationType?, gender?, plural? }
+  isHidden   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
